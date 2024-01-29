@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static study.querydsl.entity.QMember.*;
 
 @SpringBootTest
 @Transactional
@@ -42,7 +43,7 @@ public class QuerydslBasicTest {
 
     @Test
     public void startJPQL() {
-        String qlString = "select m from Member m where member =:";
+        String qlString = "select m from Member m where m.username =:username";
         Member findMember = em.createQuery(qlString, Member.class)
                 .setParameter("username", "member1")
                 .getSingleResult();
@@ -51,11 +52,10 @@ public class QuerydslBasicTest {
     }
 
     public void startQuerydsl() {
-        QMember m = new QMember("m");
         Member findMember = queryFactory
-                .select(m)
-                .from(m)
-                .where(m.username.eq("member1"))
+                .select(member)
+                .from(member)
+                .where(member.username.eq("member1"))
                 .fetchOne();
 
         assertThat(findMember.getUsername()).isEqualTo("member1");
